@@ -1,7 +1,7 @@
 -
 settings():
     # Adjust the scale of the imgui to my liking
-    imgui.scale = 1.3
+    imgui.scale = 1.6
 
     # Enable if you'd like the picker gui to automatically appear when explorer has focus
     user.file_manager_auto_show_pickers = 0
@@ -10,7 +10,7 @@ settings():
     user.help_max_command_lines_per_page = 50
 
     # Set the max number of contexts display per page in help
-    user.help_max_contexts_per_page = 20
+    user.help_max_contexts_per_page = 30
 
     # The default amount used when scrolling continuously
     user.mouse_continuous_scroll_amount = 80
@@ -55,6 +55,9 @@ settings():
     # 'size aware' keeps absolute window size the same, except full-height or
     # -width windows are resized to stay full-height/width.
     #user.window_snap_screen = "size aware"
+
+    # minimum silence time (in seconds) before speech is cut off, default 0.3
+    speech.timeout = 0.4
 
 # Uncomment this to enable the curse yes/curse no commands (show hide mouse cursor). See issue #688.
 # tag(): user.mouse_cursor_commands_enable
