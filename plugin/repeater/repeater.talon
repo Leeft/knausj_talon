@@ -2,4 +2,7 @@
 <user.ordinals>: core.repeat_command(ordinals - 1)
 <number_small> times: core.repeat_command(number_small - 1)
 (repeat that | twice): core.repeat_command(1)
+parrot(cluck):
+    user.hud_add_log('event', 'repeating phrase')
+    core.repeat_phrase(1)
 repeat that <number_small> [times]: core.repeat_command(number_small)
