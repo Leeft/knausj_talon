@@ -146,7 +146,7 @@ punctuation_words = {
     "`": "`",
     ",": ",",  # <== these things
     "back tick": "`",
-    "grave": "`",
+    #"grave": "`",
     "comma": ",",
     # Workaround for issue with conformer b-series; see #946
     "coma": ",",
@@ -160,7 +160,7 @@ punctuation_words = {
     "exclamation point": "!",
     "asterisk": "*",
     "hash sign": "#",
-    "number sign": "#",
+    #"number sign": "#",
     "percent sign": "%",
     "at sign": "@",
     "and sign": "&",
