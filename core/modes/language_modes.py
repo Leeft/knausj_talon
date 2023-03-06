@@ -26,7 +26,7 @@ language_extensions = {
     # 'json': 'json',
     # 'lua': 'lua',
     "markdown": "md",
-    # 'perl': 'pl',
+    "perl": "pl pm t",
     "php": "php",
     # 'powershell': 'ps1',
     "python": "py",
