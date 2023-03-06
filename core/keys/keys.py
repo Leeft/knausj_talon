@@ -191,6 +191,7 @@ symbol_key_words = {
     "dash": "-",
     "equals": "=",
     "plus": "+",
+    #"grave": "`",
     "tilde": "~",
     "bang": "!",
     "down score": "_",
