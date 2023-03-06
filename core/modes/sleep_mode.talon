@@ -2,7 +2,7 @@ mode: sleep
 -
 #^welcome back$:
 parrot(cluck):
-    user.mouse_wake()
+    #user.mouse_wake()
     #user.history_enable()
     user.talon_mode()
 
