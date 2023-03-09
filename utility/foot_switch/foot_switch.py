@@ -1,90 +1,77 @@
 import time
-from talon import Module, Context, actions, ctrl, cron
+from talon import Module, Context, actions, cron
 
 mod = Module()
 
-settings_timeout = mod.setting(
-    "foot_switch_timeout",
-    type=bool,
-    default=True,
-    desc="If true timeout will be used to decide if the foot switch was held or not",
-)
-
-# Obviously must match the talon file
 TOP=0
 CENTER=1
 LEFT=2
 RIGHT=3
 
-current_state = [False, False, False, False]
-last_state = [False, False, False, False]
-pressed_for = [0, 0, 0, 0]
-timestamps = [0, 0, 0, 0]
+EVENT_NONE = 0
+EVENT_DOWN = 1
+EVENT_HELD = 2 # TODO
+EVENT_UP   = 3
+
 scroll_reversed = False
 hold_timeout = 0.2
-drag_threshold = 0.2
+
+class CronDrivenSwitch:
+    """State for a foot pedal switch (could be any key, but need to start somewhere)"""
+
+    def __init__(self, down_cb, up_cb) -> None:
+        self.timestamp = 0
+        self.event = EVENT_NONE
+        self.down_cb = down_cb
+        self.up_cb = up_cb
+
+    def check(self):
+        if self.event == EVENT_NONE:
+            return
+
+        event = self.event
+        self.event = EVENT_NONE
+
+        if event == EVENT_DOWN:
+            self.down_cb()
+        else:
+            held = time.perf_counter() - self.timestamp > hold_timeout
+            self.up_cb(held)
+    
+    def down(self):
+        self.timestamp = time.perf_counter()
+        self.event = EVENT_DOWN
+
+    def up(self):
+        self.event = EVENT_UP
+
+
+switches = {
+    TOP : CronDrivenSwitch( actions.user.foot_switch_top_down, actions.user.foot_switch_top_up ),
+    CENTER : CronDrivenSwitch( actions.user.foot_switch_center_down, actions.user.foot_switch_center_up ),
+    LEFT : CronDrivenSwitch( actions.user.foot_switch_left_down, actions.user.foot_switch_left_up ),
+    RIGHT : CronDrivenSwitch( actions.user.foot_switch_right_down, actions.user.foot_switch_right_up )
+}
 
 def on_interval():
-    for key in range(4):
-        if current_state[key] != last_state[key]:
-            last_state[key] = current_state[key]
-            # Key is pressed down
-            if current_state[key]:
-                call_down(key)
-            # Key is released after specified hold time out. ie key was held.
-            elif (
-                not settings_timeout.get()
-                or time.perf_counter() - timestamps[key] > hold_timeout
-                or ( timestamps[key] != 0 and current_state[key] == False )
-            ):
-                call_up(key)
-
+    for key, switch in switches.items():
+        switch.check()
 
 # In a hotkey down event, eg "key(ctrl:down)", any key you press with key/insert
 # actions will be combined with ctrl since it's still held. Just updating a
 # boolean in the actual hotkey event and reading it asynchronously with cron
 # gets around this issue.
 cron.interval("16ms", on_interval)
-#print("foot switch timeout: {}".format( 'true' if settings_timeout.get() else 'false'))
-
-def call_down(key: int):
-    #print("call down {}".format(key))
-    if key == TOP:
-        actions.user.foot_switch_top_down()
-    elif key == CENTER:
-        actions.user.foot_switch_center_down()
-    elif key == LEFT:
-        actions.user.foot_switch_left_down()
-    elif key == RIGHT:
-        actions.user.foot_switch_right_down()
-
-def call_up(key: int):
-    #print("call up {}".format(key))
-    if key == TOP:
-        actions.user.foot_switch_top_up()
-    elif key == CENTER:
-        actions.user.foot_switch_center_up()
-    elif key == LEFT:
-        actions.user.foot_switch_left_up()
-    elif key == RIGHT:
-        actions.user.foot_switch_right_up()
 
 @mod.action_class
 class Actions:
-    def foot_switch_down(key: int):
-        """Foot switch key down event. Top(0), Center(1), Left(2), Right(3)"""
-        timestamps[key] = time.perf_counter()
-        current_state[key] = True
+    def track_foot_switch_down(key: int):
+        """Track state of foot switch on down (press) event. Top(0), Center(1), Left(2), Right(3)"""
+        switches[key].down()
 
-    def foot_switch_repeat(key: int):
-        """Foot switch key repeat event. Top(0), Center(1), Left(2), Right(3)"""
-        pressed_for[key] = time.perf_counter() - timestamps[key]
-
-    def foot_switch_up(key: int):
-        """Foot switch key up event. Top(0), Center(1), Left(2), Right(3)"""
-        pressed_for[key] = time.perf_counter() - timestamps[key]
-        current_state[key] = False
-        #print( "Foot switch {} released after {:.3f}s".format( key, pressed_for[key] ))
+    def track_foot_switch_up(key: int):
+        """Record foot switch key up (release) event. Top(0), Center(1), Left(2), Right(3)"""
+        switches[key].up()
 
 
     def foot_switch_scroll_reverse():
@@ -95,25 +82,25 @@ class Actions:
     def foot_switch_top_down():
         """Foot switch button top:down"""
 
-    def foot_switch_top_up():
+    def foot_switch_top_up(held: bool):
         """Foot switch button top:up"""
 
     def foot_switch_center_down():
         """Foot switch button center:down"""
 
-    def foot_switch_center_up():
+    def foot_switch_center_up(held: bool):
         """Foot switch button center:up"""
 
     def foot_switch_left_down():
         """Foot switch button left:down"""
 
-    def foot_switch_left_up():
+    def foot_switch_left_up(held: bool):
         """Foot switch button left:up"""
 
     def foot_switch_right_down():
         """Foot switch button right:down"""
 
-    def foot_switch_right_up():
+    def foot_switch_right_up(held: bool):
         """Foot switch button right:up"""
 
 # ---------- Default implementation ----------
@@ -128,7 +115,7 @@ class UserActions:
         else:
             actions.user.mouse_scrolling("up")
 
-    def foot_switch_top_up():
+    def foot_switch_top_up(held: bool):
         actions.user.mouse_scroll_stop()
 
     def foot_switch_center_down():
@@ -137,19 +124,19 @@ class UserActions:
         else:
             actions.user.mouse_scrolling("down")
 
-    def foot_switch_center_up():
+    def foot_switch_center_up(held: bool):
         actions.user.mouse_scroll_stop()
 
     def foot_switch_left_down():
         actions.user.mouse_drag(0)
 
-    def foot_switch_left_up():
+    def foot_switch_left_up(held: bool):
         actions.user.mouse_drag_end()
 
     def foot_switch_right_down():
         actions.mouse_click(1)
 
-    def foot_switch_right_up():
+    def foot_switch_right_up(held: bool):
         actions.mouse_release(1)
 
 
@@ -166,7 +153,7 @@ class NonSleepActions:
     def foot_switch_right_down():
         actions.user.mouse_freeze_toggle()
 
-    def foot_switch_right_up():
+    def foot_switch_right_up(held: bool):
         actions.user.mouse_freeze_toggle()
 
 
@@ -185,5 +172,5 @@ class VoipActions:
     def foot_switch_left_down():
         actions.user.mute_microphone()
 
-    def foot_switch_left_up():
+    def foot_switch_left_up(held: bool):
         actions.user.mute_microphone()
