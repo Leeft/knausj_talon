@@ -69,14 +69,14 @@ class Actions:
         """Mouse position (X, Y)"""
         return ctrl.mouse_pos()
 
-    def mouse_drag():
-        """Press and hold/release button 0 depending on state for dragging"""
-        if 0 in ctrl.mouse_buttons_down():
-            actions.mouse_release()
-            actions.user.notify("Mouse drag: False")
-        else:
-            actions.mouse_drag()
-            actions.user.notify("Mouse drag: True")
+    # def mouse_drag():
+    #     """Press and hold/release button 0 depending on state for dragging"""
+    #     if 0 in ctrl.mouse_buttons_down():
+    #         actions.mouse_release()
+    #         #actions.user.notify("Mouse drag: False")
+    #     else:
+    #         actions.mouse_drag()
+    #         #actions.user.notify("Mouse drag: True")
 
     def mouse_center_window():
         """Move the mouse cursor to the center of the currently active window"""

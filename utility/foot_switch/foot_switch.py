@@ -1,5 +1,5 @@
 import time
-from talon import Module, Context, actions, cron
+from talon import Module, Context, actions, ctrl, cron
 
 mod = Module()
 
@@ -18,9 +18,11 @@ RIGHT=3
 
 current_state = [False, False, False, False]
 last_state = [False, False, False, False]
+pressed_for = [0, 0, 0, 0]
 timestamps = [0, 0, 0, 0]
 scroll_reversed = False
 hold_timeout = 0.2
+drag_threshold = 0.2
 
 def on_interval():
     for key in range(4):
@@ -33,6 +35,7 @@ def on_interval():
             elif (
                 not settings_timeout.get()
                 or time.perf_counter() - timestamps[key] > hold_timeout
+                or ( timestamps[key] != 0 and current_state[key] == False )
             ):
                 call_up(key)
 
@@ -42,8 +45,10 @@ def on_interval():
 # boolean in the actual hotkey event and reading it asynchronously with cron
 # gets around this issue.
 cron.interval("16ms", on_interval)
+#print("foot switch timeout: {}".format( 'true' if settings_timeout.get() else 'false'))
 
 def call_down(key: int):
+    #print("call down {}".format(key))
     if key == TOP:
         actions.user.foot_switch_top_down()
     elif key == CENTER:
@@ -54,6 +59,7 @@ def call_down(key: int):
         actions.user.foot_switch_right_down()
 
 def call_up(key: int):
+    #print("call up {}".format(key))
     if key == TOP:
         actions.user.foot_switch_top_up()
     elif key == CENTER:
@@ -63,7 +69,6 @@ def call_up(key: int):
     elif key == RIGHT:
         actions.user.foot_switch_right_up()
 
-
 @mod.action_class
 class Actions:
     def foot_switch_down(key: int):
@@ -71,9 +76,16 @@ class Actions:
         timestamps[key] = time.perf_counter()
         current_state[key] = True
 
+    def foot_switch_repeat(key: int):
+        """Foot switch key repeat event. Top(0), Center(1), Left(2), Right(3)"""
+        pressed_for[key] = time.perf_counter() - timestamps[key]
+
     def foot_switch_up(key: int):
         """Foot switch key up event. Top(0), Center(1), Left(2), Right(3)"""
+        pressed_for[key] = time.perf_counter() - timestamps[key]
         current_state[key] = False
+        #print( "Foot switch {} released after {:.3f}s".format( key, pressed_for[key] ))
+
 
     def foot_switch_scroll_reverse():
         """Reverse scroll direction using foot switch"""
@@ -129,17 +141,16 @@ class UserActions:
         actions.user.mouse_scroll_stop()
 
     def foot_switch_left_down():
-        #actions.user.go_back()
-        actions.mouse_click(0)
+        actions.user.mouse_drag(0)
 
     def foot_switch_left_up():
-        pass
+        actions.user.mouse_drag_end()
 
     def foot_switch_right_down():
         actions.mouse_click(1)
 
     def foot_switch_right_up():
-        pass
+        actions.mouse_release(1)
 
 
 # ---------- Default non-sleep implementation ----------
