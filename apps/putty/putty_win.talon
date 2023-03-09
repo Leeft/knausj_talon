@@ -13,3 +13,4 @@ tag(): user.git
 tag(): user.tig
 # tag(): user.kubectl
 tag(): user.file_manager
+tag(): user.sql

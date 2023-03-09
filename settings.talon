@@ -10,7 +10,7 @@ settings():
     user.help_max_command_lines_per_page = 50
 
     # Set the max number of contexts display per page in help
-    user.help_max_contexts_per_page = 30
+    user.help_max_contexts_per_page = 60
 
     # The default amount used when scrolling continuously
     user.mouse_continuous_scroll_amount = 80
