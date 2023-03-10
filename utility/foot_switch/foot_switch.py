@@ -1,5 +1,6 @@
 import time
 from talon import Module, Context, actions, cron
+from .cron_driven_switch import CronDrivenSwitch
 
 mod = Module()
 
@@ -8,60 +9,14 @@ CENTER=1
 LEFT=2
 RIGHT=3
 
-EVENT_NONE = 0
-EVENT_DOWN = 1
-EVENT_HELD = 2 # TODO
-EVENT_UP   = 3
-
 scroll_reversed = False
-hold_timeout = 0.2
-
-class CronDrivenSwitch:
-    """State for a foot pedal switch (could be any key, but need to start somewhere)"""
-
-    def __init__(self, down_cb, up_cb) -> None:
-        self.timestamp = 0
-        self.event = EVENT_NONE
-        self.down_cb = down_cb
-        self.up_cb = up_cb
-
-    def check(self):
-        if self.event == EVENT_NONE:
-            return
-
-        event = self.event
-        self.event = EVENT_NONE
-
-        if event == EVENT_DOWN:
-            self.down_cb()
-        else:
-            held = time.perf_counter() - self.timestamp > hold_timeout
-            self.up_cb(held)
-    
-    def down(self):
-        self.timestamp = time.perf_counter()
-        self.event = EVENT_DOWN
-
-    def up(self):
-        self.event = EVENT_UP
-
 
 switches = {
-    TOP : CronDrivenSwitch( actions.user.foot_switch_top_down, actions.user.foot_switch_top_up ),
-    CENTER : CronDrivenSwitch( actions.user.foot_switch_center_down, actions.user.foot_switch_center_up ),
-    LEFT : CronDrivenSwitch( actions.user.foot_switch_left_down, actions.user.foot_switch_left_up ),
-    RIGHT : CronDrivenSwitch( actions.user.foot_switch_right_down, actions.user.foot_switch_right_up )
+    TOP : CronDrivenSwitch( TOP, actions.user.foot_switch_top_down, actions.user.foot_switch_top_up ),
+    CENTER : CronDrivenSwitch( CENTER, actions.user.foot_switch_center_down, actions.user.foot_switch_center_up ),
+    LEFT : CronDrivenSwitch( LEFT, actions.user.foot_switch_left_down, actions.user.foot_switch_left_up ),
+    RIGHT : CronDrivenSwitch( RIGHT, actions.user.foot_switch_right_down, actions.user.foot_switch_right_up )
 }
-
-def on_interval():
-    for key, switch in switches.items():
-        switch.check()
-
-# In a hotkey down event, eg "key(ctrl:down)", any key you press with key/insert
-# actions will be combined with ctrl since it's still held. Just updating a
-# boolean in the actual hotkey event and reading it asynchronously with cron
-# gets around this issue.
-cron.interval("16ms", on_interval)
 
 @mod.action_class
 class Actions:
@@ -102,6 +57,7 @@ class Actions:
 
     def foot_switch_right_up(held: bool):
         """Foot switch button right:up"""
+
 
 # ---------- Default implementation ----------
 ctx = Context()
