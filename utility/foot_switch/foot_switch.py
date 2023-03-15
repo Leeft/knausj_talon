@@ -1,33 +1,77 @@
 import time
 from talon import Module, Context, actions, cron
-from .cron_driven_switch import CronDrivenSwitch
 
 mod = Module()
 
-TOP=0
-CENTER=1
-LEFT=2
-RIGHT=3
+LEFT = 0
+CENTER = 1
+RIGHT = 2
+TOP = 3
 
+DOWN = 0
+UP = 1
+
+current_state = [UP, UP, UP, UP]
+last_state = [UP, UP, UP, UP]
+timestamps = [0, 0, 0, 0]
 scroll_reversed = False
+hold_timeout = 0.2
 
-switches = {
-    TOP : CronDrivenSwitch( TOP, actions.user.foot_switch_top_down, actions.user.foot_switch_top_up ),
-    CENTER : CronDrivenSwitch( CENTER, actions.user.foot_switch_center_down, actions.user.foot_switch_center_up ),
-    LEFT : CronDrivenSwitch( LEFT, actions.user.foot_switch_left_down, actions.user.foot_switch_left_up ),
-    RIGHT : CronDrivenSwitch( RIGHT, actions.user.foot_switch_right_down, actions.user.foot_switch_right_up )
-}
+def handle_key(key) -> None:
+    if last_state[key] != current_state[key]:
+        last_state[key] = current_state[key]
+
+        if current_state[key] == DOWN:
+            call_down(key)
+        else:
+            held = time.perf_counter() - timestamps[key] > hold_timeout
+            call_up(key, held)
+
+
+def on_interval():
+    for key in range(4):
+        handle_key(key)
+
+
+# In a hotkey event, eg "key(ctrl:down)", any key you press with key/insert
+# actions will be combined with ctrl since it's still held. Just updating a
+# boolean in the actual hotkey event and reading it asynchronously with cron
+# gets around this issue.
+cron.interval("16ms", on_interval)
+
+
+def call_down(key: int):
+    if key == LEFT:
+        actions.user.foot_switch_left_down()
+    elif key == CENTER:
+        actions.user.foot_switch_center_down()
+    elif key == RIGHT:
+        actions.user.foot_switch_right_down()
+    elif key == TOP:
+        actions.user.foot_switch_top_down()
+
+
+def call_up(key: int, held: bool):
+    if key == LEFT:
+        actions.user.foot_switch_left_up(held)
+    elif key == CENTER:
+        actions.user.foot_switch_center_up(held)
+    elif key == RIGHT:
+        actions.user.foot_switch_right_up(held)
+    elif key == TOP:
+        actions.user.foot_switch_top_up(held)
+
 
 @mod.action_class
 class Actions:
-    def track_foot_switch_down(key: int):
-        """Track state of foot switch on down (press) event. Top(0), Center(1), Left(2), Right(3)"""
-        switches[key].down()
+    def foot_switch_down_event(key: int):
+        """Foot switch key down event. Left(0), Center(1), Right(2), Top(3)"""
+        timestamps[key] = time.perf_counter()
+        current_state[key] = DOWN
 
-    def track_foot_switch_up(key: int):
-        """Record foot switch key up (release) event. Top(0), Center(1), Left(2), Right(3)"""
-        switches[key].up()
-
+    def foot_switch_up_event(key: int):
+        """Foot switch key up event. Left(0), Center(1), Right(2), Top(3)"""
+        current_state[key] = UP
 
     def foot_switch_scroll_reverse():
         """Reverse scroll direction using foot switch"""
@@ -97,36 +141,36 @@ class UserActions:
 
 
 # ---------- Default non-sleep implementation ----------
-ctx_eye_tracker = Context()
-ctx_eye_tracker.matches = r"""
-tag: user.eye_tracker
-tag: user.eye_tracker_frozen
-"""
+# ctx_eye_tracker = Context()
+# ctx_eye_tracker.matches = r"""
+# tag: user.eye_tracker
+# tag: user.eye_tracker_frozen
+# """
 
 
-@ctx_eye_tracker.action_class("user")
-class NonSleepActions:
-    def foot_switch_right_down():
-        actions.user.mouse_freeze_toggle()
+# @ctx_eye_tracker.action_class("user")
+# class NonSleepActions:
+#     def foot_switch_right_down():
+#         actions.user.mouse_freeze_toggle()
 
-    def foot_switch_right_up(held: bool):
-        actions.user.mouse_freeze_toggle()
+#     def foot_switch_right_up(held: bool):
+#         actions.user.mouse_freeze_toggle()
 
 
 # ---------- Audio conferencing ----------
-ctx_voip = Context()
-ctx_voip.matches = r"""
-mode: command
-mode: dictation
-mode: sleep
-tag: user.voip
-"""
+# ctx_voip = Context()
+# ctx_voip.matches = r"""
+# mode: command
+# mode: dictation
+# mode: sleep
+# tag: user.voip
+# """
 
 
-@ctx_voip.action_class("user")
-class VoipActions:
-    def foot_switch_left_down():
-        actions.user.mute_microphone()
+# @ctx_voip.action_class("user")
+# class VoipActions:
+#     def foot_switch_left_down():
+#         actions.user.mute_microphone()
 
-    def foot_switch_left_up(held: bool):
-        actions.user.mute_microphone()
+#     def foot_switch_left_up(held: bool):
+#         actions.user.mute_microphone()
