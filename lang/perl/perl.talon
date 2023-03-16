@@ -17,6 +17,8 @@ tag(): user.code_operators_assignment
 #tag(): user.code_operators_lambda
 tag(): user.code_operators_math
 
+tag(): user.cursorless_experimental_snippets
+
 settings():
     user.code_private_function_formatter = "PRIVATE_CAMEL_CASE"
     user.code_protected_function_formatter = "PRIVATE_CAMEL_CASE"
@@ -36,6 +38,7 @@ see pan (m | em | minus): "cpanm "
 use pragmas: "use utf8;\nuse Modern::Perl;\n"
 use moose: "use utf8;\nuse Moose;\n"
 use printer: "use Data::Printer;\n"
+    
 perl use: "use "
 perl require: "require "
 perl local: "local "
@@ -60,6 +63,13 @@ perl (uppercase | upcase | upper): " uc "
 perl map: "map "
 op [perl] (diamond | input): "<q "
 perl times: " x "
+
+plain type {user.moose_type}$: insert("{moose_type}")
+is [type] {user.moose_type}$: insert("is_{moose_type} ")
+to [type] {user.moose_type}$: insert("to_{moose_type} ")
+
+self log {user.logging_level}$: insert("$self->log->{logging_level}();")
+catalyst log {user.logging_level}$: insert("$c->log->{logging_level}();")
 
 make immutable: "__PACKAGE__->meta->make_immutable;\n"
 

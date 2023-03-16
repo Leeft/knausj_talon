@@ -10,13 +10,13 @@ tag: user.perl
 
 ctx.lists["user.code_common_function"] = {
     "params": "params",
-    "perltidy": "perltidy",
     "undef": "undef",
     "perl": "perl",
     "diag": "diag",
     "note": "note",
-    "ott": "OTT",
     "validate": "validate",
+    "deeply": "cmp_deeply",
+    "superhashof": "superhashof",
 }
 
 mod.list("moose_type", "Commonly used Moose types")
@@ -24,6 +24,8 @@ mod.list("moose_type", "Commonly used Moose types")
 ctx.lists["user.moose_type"] = {
     "boolean": "Bool",
     "integer": "Int",
+    "positive integer": "PositiveInt",
+    "positive or zero integer": "PositiveOrZeroInt",
     "string": "Str",
     "none": "None",
     "dick": "Dict",
@@ -31,7 +33,22 @@ ctx.lists["user.moose_type"] = {
     "any": "Any",
     "tuple": "Tuple",
     "list": "ArrayOf",
+    "list of": "ArrayOf",
     "list ref": "ArrayRef",
+    "hash": "HashRef",
+    "hash ref": "HashRef",
+}
+
+ctx.lists["user.logging_levels"] = {
+    "debug": "debug",
+    "info": "info",
+    "notice": "notice",
+    "warn": "warn",
+    "warning": "warn",
+    "error": "error",
+    "critical": "critical",
+    "alert": "alert",
+    "emergency": "emergency",
 }
 
 @ctx.action_class("user")
@@ -128,8 +145,8 @@ class UserActions:
         actions.auto_insert(" defined ")
 
     def code_state_if():
-        actions.insert("if () {\n}\n")
-        actions.key("up:2 left:3")
+        actions.insert("if (  ) {}")
+        actions.key("left enter up right")
 
     def code_state_else_if():
         actions.insert("elsif () {\n}\n")
