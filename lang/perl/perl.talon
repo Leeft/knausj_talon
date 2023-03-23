@@ -68,8 +68,14 @@ plain type {user.moose_type}$: insert("{moose_type}")
 is [type] {user.moose_type}$: insert("is_{moose_type} ")
 to [type] {user.moose_type}$: insert("to_{moose_type} ")
 
-self log {user.logging_level}$: insert("$self->log->{logging_level}();")
-catalyst log {user.logging_level}$: insert("$c->log->{logging_level}();")
+self log {user.logging_levels}$:
+    insert("$self->log->{logging_levels}( \"\" );")
+    key(left:4)
+    
+catalyst log {user.logging_levels}$:
+    insert("$c->log->{logging_levels}( \"\" );")
+    key(left:4)
+
 
 make immutable: "__PACKAGE__->meta->make_immutable;\n"
 

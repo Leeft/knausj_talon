@@ -39,6 +39,8 @@ ctx.lists["user.moose_type"] = {
     "hash ref": "HashRef",
 }
 
+mod.list('logging_levels', 'Syslog type log levels')
+
 ctx.lists["user.logging_levels"] = {
     "debug": "debug",
     "info": "info",
@@ -108,14 +110,8 @@ class UserActions:
     def code_operator_equal():
         actions.auto_insert(" == ")
 
-    # def code_operator_string_equal():
-    #     actions.auto_insert(" eq ")
-
     def code_operator_not_equal():
         actions.auto_insert(" != ")
-
-    # def code_operator_string_not_equal():
-    #     actions.auto_insert(" ne ")
 
     def code_operator_greater_than():
         actions.auto_insert(" > ")
