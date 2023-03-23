@@ -1,80 +1,95 @@
 parrot(cluck):
-	print("cluck")
+    user.hud_add_log('event'suc 'cluck')
+
+parrot(puh):
+    user.hud_add_log('event', 'puh')
+
+parrot(quick_stab):
+    user.hud_add_log('event', 'quick_stab')
+
+parrot(suh):
+    user.hud_add_log('event', 'suh')
+
+parrot(tuh):
+    user.hud_add_log('event', 'tuh')
+
 
 parrot(tut):
-	print("tut")
+    user.hud_add_log('event', 'tut')
 
 parrot(palate_click):
-	print("palate_click")
+    user.hud_add_log('event', 'palate_click')
 
 parrot(pop):
-	print("pop")
+    user.hud_add_log('event', 'pop')
 
 parrot(gluck):
-	print("gluck")
+    user.hud_add_log('event', 'gluck')
 
 parrot(finger_snap):
-	print("finger_snap")
+
+
+    user.hud_add_log('event', 'finger_snap')
 
 parrot(ch):
-	print("ch")
+    user.hud_add_log('event', 'ch')
 
 parrot(ah):
-	print("ah")
+    user.hud_add_log('event', 'ah')
 
 parrot(oh):
-	print("oh")
+    user.hud_add_log('event', 'oh')
 
 parrot(ee):
-	print("ee")
+    user.hud_add_log('event', 'ee')
 
 parrot(ue):
-	print("ue")
+    user.hud_add_log('event', 'ue')
 
 parrot(ae):
-	print("ae")
+    user.hud_add_log('event', 'ae')
 
 parrot(horse):
-	print("horse")
+    user.hud_add_log('event', 'horse')
 
 parrot(whistle):
-	print("whistle")
+    user.hud_add_log('event', 'whistle')
 
 parrot(chopper):
-	print("chopper")
+    user.hud_add_log('event', 'chopper')
 
 parrot(hurr):
-	print("hurr")
+    user.hud_add_log('event', 'hurr')
 
 parrot(hmm):
-	print("hmm")
+    user.hud_add_log('event', 'hmm')
 
 parrot(oo):
-	print("oo")
+    user.hud_add_log('event', 'oo')
 
 parrot(lll):
-	print("lll")
+    user.hud_add_log('event', 'lll')
 
 parrot(yee):
-	print("yee")
+    user.hud_add_log('event', 'yee')
 
 parrot(uh):
-	print("uh")
+    user.hud_add_log('event', 'uh')
 
 parrot(fff):
-	print("fff")
+    userhud_add_log('event', 'fff')
 
 parrot(buzz):
-	print("buzz")
+    user.hud_add_log('event', 'buzz')
 
 parrot(generator):
-	print("generator")
+    user.hud_add_log('event', 'generator')
 
 parrot(hiss):
-	print("hiss")
+    user.hud_add_log('event', 'hiss')
 
 parrot(shush):
-	print("shush")
+    user.hud_add_log('event', 'shush')
 
 parrot(x):
-	print("x")
+    user.hud_add_log('event', 'x')
