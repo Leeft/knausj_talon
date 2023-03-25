@@ -1,5 +1,5 @@
 parrot(cluck):
-    user.hud_add_log('event'suc 'cluck')
+    user.hud_add_log('event', 'cluck')
 
 parrot(puh):
     user.hud_add_log('event', 'puh')

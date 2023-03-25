@@ -5,10 +5,10 @@ troll:                      user.mouse_click("control")
 righter:                    user.mouse_click("right")
 
 # Scroll
-climb:                      user.mouse_scrolling("up")
-drop:                       user.mouse_scrolling("down")
-climb <number_small>:       user.mouse_scroll("up", number_small)
-drop <number_small>:        user.mouse_scroll("down", number_small)
+# climb:                      user.mouse_scrolling("up")
+# drop:                       user.mouse_scrolling("down")
+# climb <number_small>:       user.mouse_scroll("up", number_small)
+# drop <number_small>:        user.mouse_scroll("down", number_small)
 mouse gaze:                 user.mouse_gaze_scroll()
 
 scroll speed show:          user.mouse_scroll_speed_notify()
