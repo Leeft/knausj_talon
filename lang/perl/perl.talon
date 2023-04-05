@@ -4,7 +4,6 @@ tag(): user.code_imperative
 tag(): user.code_object_oriented
 
 tag(): user.code_comment_line
-#tag(): user.code_comment_block_c_like
 tag(): user.code_data_bool
 tag(): user.code_data_null
 tag(): user.code_functions
@@ -14,9 +13,8 @@ tag(): user.code_libraries
 tag(): user.code_operators_array
 tag(): user.code_operators_assignment
 #tag(): user.code_operators_bitwise
-#tag(): user.code_operators_lambda
+tag(): user.code_operators_lambda
 tag(): user.code_operators_math
-
 tag(): user.cursorless_experimental_snippets
 
 settings():
@@ -81,22 +79,11 @@ make immutable: "__PACKAGE__->meta->make_immutable;\n"
 
 #state const: "const "
 
-#state let: "let "
-
-#state var: "var "
-
-#state export: "export "
-
-#state async: "async "
-
-#state await: "await "
+state let: "my "
+state var: "my "
 
 #dot {user.code_common_member_function}:
 #    user.insert_between(".{code_common_member_function}(", ")")
-
-#state map: app.notify('ERROR: Command deprecated; please use "dot map"')
-#state filter: app.notify('ERROR: Command deprecated; please use "dot filter"')
-#state reduce: app.notify('ERROR: Command deprecated; please use "dot reduce"')
 
 yada yada: "..."
 

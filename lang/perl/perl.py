@@ -61,6 +61,10 @@ class UserActions:
     def code_self():
         actions.auto_insert("$this")
 
+    def code_operator_lambda():
+        actions.insert("sub {}")
+        actions.key("left")
+
     def code_define_class():
         actions.insert("package ")
 
