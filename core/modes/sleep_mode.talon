@@ -1,10 +1,11 @@
 mode: sleep
 -
 #^welcome back$:
-parrot(cluck):
+#parrot(cluck):
     #user.mouse_wake()
     #user.history_enable()
-    user.talon_mode()
+    #user.talon_mode()
+#key(f13:down f15:down): user.talon_mode()
 
 settings():
     #stop continuous scroll/gaze scroll with a pop
