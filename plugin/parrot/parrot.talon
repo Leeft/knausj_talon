@@ -1,5 +1,9 @@
+parrot(pop):
+    user.hud_add_log('event', 'pop')
+
 parrot(cluck):
     user.hud_add_log('event', 'cluck')
+
 
 parrot(puh):
     user.hud_add_log('event', 'puh')
@@ -20,15 +24,10 @@ parrot(tut):
 parrot(palate_click):
     user.hud_add_log('event', 'palate_click')
 
-parrot(pop):
-    user.hud_add_log('event', 'pop')
-
 parrot(gluck):
     user.hud_add_log('event', 'gluck')
 
 parrot(finger_snap):
-
-
     user.hud_add_log('event', 'finger_snap')
 
 parrot(ch):
