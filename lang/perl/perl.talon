@@ -61,12 +61,16 @@ perl (uppercase | upcase | upper): " uc "
 [perl] map: "map "
 op [perl] (diamond | input): "<> "
 perl times: " x "
-say: "say "
+perl say: "say "
 say error: "say {{ *STDERR }} "
 
 plain type {user.moose_type}$: insert("{moose_type}")
 is [type] {user.moose_type}$: insert("is_{moose_type} ")
 to [type] {user.moose_type}$: insert("to_{moose_type} ")
+
+scalar var <word>: insert("${word}")
+array var <word>: insert("@{word}")
+hash var <word>: insert("%{word}")
 
 self log {user.logging_levels}$:
     insert("$self->log->{logging_levels}( \"\" );")
